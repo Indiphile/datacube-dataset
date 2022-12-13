@@ -1,45 +1,27 @@
-# Datacube Dataset Config Examples and Scripts
+# Archive ODC Product/Datasets (in beta)
 
-Scripts for indexing data into ODC instances.
+- This is repository contains scripts for archiving odc datasets. According to the 
+[ODC API REFERENCE DOCS](https://datacube-core.readthedocs.io/en/latest/api/indexed-data/dataset-querying.html) ODC datasets can be archived and later restored.
 
-## Documented Examples
+## WARNING
+ - ODC datasets can be restored using **dataset ids**, that means, **datasets ids** must stored before the archiving process.
+ - The script in this repository stores the archived **dataset ids** in a ***csv  file*** in a format `PRODUCT_NAME_archived.csv`
 
-* [Sentinel-2 Cloud-Optimised GeoTIFFs](sentinel-2-l2a-cogs.md)
-* [USGS Landsat Collection 2](usgs-landsat-collection2.md)
-* [ESRI Land Cover](esri-land-cover.md)
 
-## GDAL3 Note
+## Running archive_product script
+ - Runs on ODC environment. [To configure ODC environment](https://datacube-core.readthedocs.io/en/latest/installation/setup/ubuntu.html#)
+ - Input : existing **PRODUCT-NAME**
+ - Output : `PRODUCT_NAME_archived.csv` containing a list of archived **dataset ids**
+ - `s3 Bucket` : s3://deafrica-landsat/status-report/archived/
 
-Please note - we are aware that using these scripts with GDAL 3.0+ can cause Latitudes and Longitudes to become transposed. When using these scripts, please use a python environment with an earlier version of GDAL.
-
-## odc-product-delete (In beta)
-
-SQL scripts to delete ODC products and related records in ODC, Explorer and OWS DB. Each script takes product_name as an input parameter.
-
-Usage:
-
+## Environment variables
 ``` bash
-psql -v product_name=<product-to-delete> -f <scriptname.sql> -h <database-hostname> <dbname>
+export DB_DATABASE=dbname
+export DB_HOSTNAME=localhost
+export DB_USERNAME=example
+export DB_PASSWORD=secretexample
+
+os.environ["AWS_ACCESS_KEY_ID"] = ""
+os.environ["AWS_SECRET_ACCESS_KEY"] = ""
+os.environ["AWS_DEFAULT_REGION"] = "af-south-1"
 ```
-
-* `delete_odc_product.sql`
-  * This script will delete a product and all datasets from an ODC DB. 
-  * It deletes records from tables `agdc.dataset_source`, `agdc.dataset_location`, `agdc.dataset` and `agdc.dataset_type`.
-  * It also deletes indexes and view related to the ODC product.
-
-* `delete_odc_product_explorer.sql`
-  * This script will delete records related to an ODC product from the Explorer Schema in the ODC DB.
-  * This script needs to be run before `delete_odc_product.sql` as script makes reference to ODC DB.
-  * It deletes records from these tables `cubedash.dataset_spatial`, `cubedash.time_overview`, `cubedash.product`.
-  * Also, it refreshes materialised view `cubedash.mv_dataset_spatial_quality`.
-
-* `delete_odc_product_ows.sql`
-  * This script will delete records from tables `wms.product_ranges` and `wms.sub_product_ranges`. 
-  * This script needs to be run before `delete_odc_product.sql` as OWS DB maintains a foreign key to ODC DB.
-  * Table `agdc.dataset_type` has foreign key constraint `wms.product_ranges_id_fkey` on table `wms.product_ranges`
-
-### WARNING
-
-* AS ODC doesn't have product deletion feature with an intention to keep an immutable history of datasets, these scripts are created to manually delete an entire ODC Product. 
-* These scripts deletes data, so review the scripts thoroughly and use it very carefully!
-* For more detail, read [here](./odc-product-delete//README.md)
