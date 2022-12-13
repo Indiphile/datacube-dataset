@@ -25,7 +25,10 @@ dataset_ids = []
 # input product name
 PRODUCT_NAME = sys.argv[1]
 
+print("Product name = "+PRODUCT_NAME)
+
 # search datasets using product name
+'''
 try:
 
     datasets_list = dc.find_datasets(product=PRODUCT_NAME)
@@ -44,5 +47,5 @@ else:
     df = pd.DataFrame(dataset_ids)
     s3.Bucket("s3://deafrica-landsat/status-report/archived/").upload_file(Filename=PRODUCT_NAME + "_archived.csv", Key=PRODUCT_NAME + "_archived.csv")
     dc.index.datasets.archive(dataset_ids)
-
+'''
 print("Done")

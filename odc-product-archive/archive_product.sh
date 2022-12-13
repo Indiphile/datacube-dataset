@@ -8,8 +8,8 @@ datacube product list
 #conda activate odc_env
 
 echo "PRODUCT NAME"
-#read ${PRODUCT_NAME}
+read ${PRODUCT_NAME}
 
-echo "start archiving datasets"
-#python archive_odc_product.py ${PRODUCT_NAME}
+
+python3 archive_odc_product.py ${PRODUCT_NAME}
 
