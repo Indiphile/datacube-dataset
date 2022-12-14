@@ -23,9 +23,9 @@ datasets_list = []
 dataset_ids = []
 
 # input product name
-PRODUCT_NAME = sys.argv[1]
+PRODUCT_NAME = os.environ["PRODUCT_NAME"]
 
-print("Product name = "+PRODUCT_NAME)
+print("Product  = "+PRODUCT_NAME)
 
 # search datasets using product name
 '''
